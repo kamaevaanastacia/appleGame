@@ -75,5 +75,14 @@ int main()
 
     ApplesGame::DeinializeGame(game);
 
+    
+    if (game.apples != nullptr) {
+        delete game.apples;
+        game.apples = nullptr;
+    }
+
+
+  
+
     return 0;
 }

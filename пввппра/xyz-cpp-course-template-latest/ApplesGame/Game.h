@@ -11,6 +11,8 @@ namespace ApplesGame
 {
 	struct Game
 	{
+		
+
 		Player player;
 		Apple* apples = nullptr;
 		int mode = 0; // маска
@@ -32,6 +34,8 @@ namespace ApplesGame
 		sf::Texture playerTexure;
 		sf::Texture rockTexure;
 		sf::Texture appleTexure;
+		sf::Font gameoverFont;      
+		sf::Text gameoverText;
 	};
 
 	void RestartGame(Game& game);

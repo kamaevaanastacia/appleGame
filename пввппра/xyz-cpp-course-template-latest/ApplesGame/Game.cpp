@@ -59,14 +59,17 @@ namespace ApplesGame
 		ClearApples(game);
 		// режимы
 		game.appleCount = (game.mode & MODE_50_APPLES) ? 50 : 20;
-		game.apples = new Apple[game.appleCount];
+		if(game.appleCount > 0) 
+		{
+			game.apples = new Apple[game.appleCount];
+		}
+        else 
+		{
+	        game.apples = nullptr;
+        }
 
-		if (game.mode & MODE_FAST) {
-			game.normalSpeed = INITIAL_SPEED;
-		}
-		else {
-			game.normalSpeed = INITIAL_SPEED;
-		}
+		
+		game.normalSpeed = INITIAL_SPEED;
 		
 
 
@@ -128,7 +131,6 @@ namespace ApplesGame
 			// Find player collisions with apples
 			for (int i = 0; i < game.appleCount; ++i)
 			{
-				// ≈сли €блоко уже съедено Ч пропускаем
 				if (game.apples[i].isEaten)
 					continue;
 
@@ -137,18 +139,21 @@ namespace ApplesGame
 				{
 					game.eatSound.play();
 					++game.numEatenApples;
-					game.player.speed += ACCELERATION;
+					
 
-					if (game.mode & MODE_FAST) {
+					if (game.mode & MODE_FAST) 
+					{
 						game.player.speed += ACCELERATION;
 					}
-					else {
+					else 
+					{
 						game.player.speed = INITIAL_SPEED;
 					}
 
 					if (game.mode & MODE_FINITY)
 					{
 						game.apples[i].isEaten = true;
+						
 					}
 					else
 					{
@@ -156,7 +161,7 @@ namespace ApplesGame
 						game.apples[i].position.x = newPos.x;
 						game.apples[i].position.y = newPos.y;
 					}
-					if (game.numEatenApples >= game.appleCount)
+					if ((game.mode & MODE_FINITY) && (game.numEatenApples >= game.appleCount))
 					{
 						game.isGameFinished = true;
 						break;

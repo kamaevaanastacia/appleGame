@@ -6,8 +6,8 @@
 
 namespace ApplesGame
 {
-    static Text gameoverText;
-    static bool isInitialized = false;
+    Text gameoverText;
+    bool isInitialized = false;
 
     void GameOver(Game& game)
     {
