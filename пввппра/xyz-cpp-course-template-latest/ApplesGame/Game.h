@@ -9,6 +9,13 @@
 
 namespace ApplesGame
 {
+
+	struct LeaderboardEntry
+	{
+		std::string name;
+		int score;
+	};
+
 	struct Game
 	{
 		
@@ -25,6 +32,8 @@ namespace ApplesGame
 		bool isGameFinished = false;
 		float timeSinceGameFinish = 0.f;
 		sf::RectangleShape background;
+		std::vector<LeaderboardEntry> leaderboard;
+		bool showLeaderboard = false;
 
 		//Resources
 		sf::Sound eatSound;
@@ -43,4 +52,9 @@ namespace ApplesGame
 	void UpdateGame(Game& game, float deltaTime);
 	void DrawGame(Game& game, sf::RenderWindow& window);
 	void DeinializeGame(Game& game);
+
+	void InitLeaderboard(Game& game);
+	void AddPlayerToLeaderboard(Game& game, const std::string& playerName);
+	void SortLeaderboard(std::vector<LeaderboardEntry>& list);
+	void DrawLeaderboard(const Game& game, sf::RenderWindow& window);
 }

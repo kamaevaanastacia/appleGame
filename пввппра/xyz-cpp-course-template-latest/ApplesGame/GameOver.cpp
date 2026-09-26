@@ -15,6 +15,8 @@ namespace ApplesGame
         game.isGameFinished = true;
         game.timeSinceGameFinish = 0.f;
 
+        AddPlayerToLeaderboard(game, "Player");
+
         if (!isInitialized)
         {
             InitGOtext(gameoverText);

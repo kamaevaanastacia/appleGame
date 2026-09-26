@@ -68,6 +68,8 @@ int main()
         else
         {
             ApplesGame::DrawGameOverScreen(window);
+
+            ApplesGame::DrawLeaderboard(game, window);
         }
 
         window.display();

@@ -6,9 +6,100 @@
 #include <SFML/Audio.hpp>
 #include "GameOver.h"
 #include "Text.h"
+#include <algorithm>
 
 namespace ApplesGame
 {
+
+
+	void InitLeaderboard(Game& game)
+	{
+		game.leaderboard.clear();
+		// Генерируем 5–10 вымышленных игроков
+		const std::vector<std::string> names = {
+			"Alice", "Bob", "Carol", "Dave", "Eve",
+			"Frank", "Grace", "Heidi", "Ivan", "Judy"
+		};
+
+		for (size_t i = 0; i < names.size(); ++i)
+		{
+			LeaderboardEntry entry;
+			entry.name = names[i];
+			// Случайные очки от 30 до 150
+			entry.score = 30 + (rand() % 121);
+			game.leaderboard.push_back(entry);
+		}
+
+		SortLeaderboard(game.leaderboard);
+	}
+
+	void AddPlayerToLeaderboard(Game& game, const std::string& playerName)
+	{
+		LeaderboardEntry entry;
+		entry.name = playerName;
+		entry.score = game.numEatenApples;
+		game.leaderboard.push_back(entry);
+		SortLeaderboard(game.leaderboard);
+	}
+
+	// Сортировка пузырьком по убыванию очков
+	void SortLeaderboard(std::vector<LeaderboardEntry>& list)
+	{
+		size_t n = list.size();
+		for (size_t i = 0; i < n - 1; ++i)
+		{
+			bool swapped = false;
+			for (size_t j = 0; j < n - i - 1; ++j)
+			{
+				if (list[j].score < list[j + 1].score)
+				{
+					std::swap(list[j], list[j + 1]);
+					swapped = true;
+				}
+			}
+			if (!swapped) break;
+		}
+	}
+
+	void DrawLeaderboard(const Game& game, sf::RenderWindow& window)
+	{
+		sf::Font font;
+		// Загружаем тот же шрифт, что и для Game Over, или любой другой
+		if (!font.loadFromFile(RESOURCES_PATH2 + "\\Roboto-Medium.ttf"))
+		{
+			// Если шрифт не загрузился, можно использовать дефолтный или вывести ошибку
+			return;
+		}
+
+		sf::Text title;
+		title.setFont(font);
+		title.setString("====== LEADERBOARD ======");
+		title.setCharacterSize(24);
+		title.setFillColor(sf::Color::White);
+		title.setPosition(200.f, 100.f);
+		window.draw(title);
+
+		float yOffset = 140.f;
+		float xName = 200.f;
+		float xScore = 450.f;
+
+		for (size_t i = 0; i < game.leaderboard.size() && i < 10; ++i)
+		{
+			sf::Text line;
+			line.setFont(font);
+			std::string lineStr = std::to_string(i + 1) + ". " + game.leaderboard[i].name;
+			// Добавляем точки до выравнивания
+			while (lineStr.length() < 15) lineStr += ".";
+			lineStr += " " + std::to_string(game.leaderboard[i].score);
+			line.setString(lineStr);
+			line.setCharacterSize(20);
+			line.setFillColor(sf::Color::White);
+			line.setPosition(xName, yOffset + i * 30.f);
+			window.draw(line);
+		}
+	}
+
+
 
 	void ClearApples(Game& game)
 	{
@@ -77,8 +168,16 @@ namespace ApplesGame
 		game.background.setFillColor(sf::Color::Black);
 		game.background.setPosition(0.f, 0.f);
 
+		InitLeaderboard(game);
+
 		RestartGame(game);
 	}
+
+
+
+
+
+
 
 	void UpdateGame(Game& game, float deltaTime)
 	{
