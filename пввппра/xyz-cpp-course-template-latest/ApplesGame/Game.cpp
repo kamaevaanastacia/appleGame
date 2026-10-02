@@ -7,6 +7,7 @@
 #include "GameOver.h"
 #include "Text.h"
 #include <algorithm>
+#include <iostream>
 
 namespace ApplesGame
 {
@@ -33,12 +34,36 @@ namespace ApplesGame
 		SortLeaderboard(game.leaderboard);
 	}
 
+
+	//поиск_игрока
+	int FindPlayerInLeaderboard(const std::vector<LeaderboardEntry>& list, const std::string& name)
+	{
+		for (size_t i = 0; i < list.size(); ++i)
+		{
+			if (list[i].name == name)
+			{
+				return static_cast<int>(i);
+			}
+		}
+		return -1;
+	}
+
 	void AddPlayerToLeaderboard(Game& game, const std::string& playerName)
 	{
-		LeaderboardEntry entry;
-		entry.name = playerName;
-		entry.score = game.numEatenApples;
-		game.leaderboard.push_back(entry);
+		std::cout << "Adding/updating player: \"" << playerName << "\" with score " << game.numEatenApples << "\n";
+		int index = FindPlayerInLeaderboard(game.leaderboard, playerName);
+
+		if (index != -1)
+		{
+			game.leaderboard[index].score = game.numEatenApples;
+		}
+		else
+		{
+			LeaderboardEntry entry;
+			entry.name = playerName;
+			entry.score = game.numEatenApples;
+			game.leaderboard.push_back(entry);
+		}
 		SortLeaderboard(game.leaderboard);
 	}
 
@@ -83,7 +108,7 @@ namespace ApplesGame
 		float xName = 200.f;
 		float xScore = 450.f;
 
-		for (size_t i = 0; i < game.leaderboard.size() && i < 10; ++i)
+		for (size_t i = 0; i < game.leaderboard.size() && i < 50; ++i)
 		{
 			sf::Text line;
 			line.setFont(font);
@@ -174,11 +199,6 @@ namespace ApplesGame
 	}
 
 
-
-
-
-
-
 	void UpdateGame(Game& game, float deltaTime)
 	{
 		// Update game state
@@ -262,7 +282,7 @@ namespace ApplesGame
 					}
 					if ((game.mode & MODE_FINITY) && (game.numEatenApples >= game.appleCount))
 					{
-						game.isGameFinished = true;
+						GameOver(game);
 						break;
 					}
 				}
